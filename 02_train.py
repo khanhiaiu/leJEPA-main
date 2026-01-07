@@ -130,11 +130,11 @@ def main():
     loader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True, pin_memory=True, num_workers=4)
 
     # 2. Init Model
-    DEVICE = "cpu"
+    # DEVICE = "cpu"
     model = LeJEPA_Robot(action_dim=4, z_dim=64, in_channels=in_channels).to(DEVICE)
 
-    # if USE_DATAPARALLEL and DEVICE == "cuda" and torch.cuda.device_count() > 1:
-    #     model = torch.nn.DataParallel(model)
+    if USE_DATAPARALLEL and DEVICE == "cuda" and torch.cuda.device_count() > 1:
+        model = torch.nn.DataParallel(model)
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=LEARNING_RATE, weight_decay=1e-4) # [cite: 2879]
 

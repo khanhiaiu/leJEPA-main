@@ -13,7 +13,8 @@ from src.models import LeJEPA_Robot
 TASK_NAME = COMMON.task_name
 IMG_SIZE = COMMON.img_size
 RENDER_SIZE = COMMON.render_size
-DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
+# DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
+DEVICE = "cpu"
 MODEL_PATH = COMMON.model_path
 
 # Multiview cameras (match data collection)
@@ -229,16 +230,16 @@ def plan_with_mppi(model, z_curr, z_goal):
 def run_inference():
     # Load Model
     print("🧠 Loading Brain...")
-    base = LeJEPA_Robot(action_dim=4, z_dim=64, in_channels=3 *  z).to(DEVICE)
-    base.load_state_dict(torch.load(MODEL_PATH, map_location=DEVICE))
+    base = LeJEPA_Robot(action_dim=4, z_dim=64, in_channels=3 * NUM_CAMERAS).to(DEVICE)
+    # base.load_state_dict(torch.load(MODEL_PATH, map_location=DEVICE))
     base.eval()
 
     # Build callables (maybe DataParallel)
     encoder = base.encoder
     predictor = base.predictor
-    if USE_DATAPARALLEL and DEVICE == "cuda" and torch.cuda.device_count() > 1:
-        encoder = torch.nn.DataParallel(encoder)
-        predictor = torch.nn.DataParallel(predictor)
+    # if USE_DATAPARALLEL and DEVICE == "cuda" and torch.cuda.device_count() > 1:
+    #     encoder = torch.nn.DataParallel(encoder)
+    #     predictor = torch.nn.DataParallel(predictor)
     model = {"encoder": encoder, "predictor": predictor}
     
     env, ml1 = get_env()
