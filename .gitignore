@@ -1,0 +1,5 @@
+/data*/
+*.pyc
+__pycache__/
+merge_parts.py
+*.zip
